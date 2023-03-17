@@ -29,6 +29,7 @@ toggleBtn.addEventListener('click', function(e) {
     e.preventDefault();
   // Si el GIF está detenido, reanudar la animación
   changeToGifImage()
+  toggleBtn.disabled= true
   if (gif.classList.contains('stopped')) {
     gif.classList.remove('stopped');
   }
