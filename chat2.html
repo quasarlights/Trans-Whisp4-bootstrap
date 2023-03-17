@@ -1,0 +1,83 @@
+Detectar llegada de archivo.
+
+
+GASTON ESTEBAN CAMPAGNO
+Como puedo detectar con javascript cuando le llega al front un archivo desde en servidor?
+
+Para detectar cuándo un archivo ha llegado al front-end a través del servidor en JavaScript, puedes utilizar el evento onload de un objeto XMLHttpRequest. Aquí hay un ejemplo básico de cómo se puede hacer esto:
+
+javascript
+Copy code
+const request = new XMLHttpRequest();
+request.open('GET', 'ruta/al/archivo');
+request.responseType = 'blob';
+
+request.onload = function() {
+  if (request.status === 200) {
+    const blob = request.response;
+    // Aquí puedes hacer lo que necesites con el objeto 'blob'
+  }
+};
+
+request.send();
+En este ejemplo, se utiliza XMLHttpRequest para hacer una solicitud GET al archivo que se encuentra en el servidor. Luego, se establece el tipo de respuesta en 'blob' para que se reciba el archivo como un objeto de tipo blob en lugar de como un string. Finalmente, se establece la función onload para que se ejecute cuando la respuesta ha sido recibida con éxito. Dentro de esta función, se comprueba que la respuesta del servidor sea 200 (es decir, que se ha recibido correctamente), y se puede acceder al archivo como un objeto blob. A partir de aquí, puedes hacer lo que necesites con el archivo.
+
+
+
+
+GASTON ESTEBAN CAMPAGNO
+Le estoy mandando con un input file un archivo a una flask app. El back procesa el archivo, y al terminar devuelve otro archivo al front. Como detecto en el front el evento del archivo devuelto por el front?
+
+Para detectar el evento del archivo devuelto por el backend en el front-end, puedes utilizar la API de Fetch de JavaScript. Aquí hay un ejemplo de cómo se puede hacer esto:
+
+javascript
+Copy code
+// Obtener el archivo del input file
+const file = document.getElementById('input-file').files[0];
+
+// Crear una nueva instancia de FormData para enviar el archivo al servidor
+const formData = new FormData();
+formData.append('archivo', file);
+
+// Realizar la solicitud POST al servidor utilizando la API Fetch
+fetch('/procesar-archivo', {
+  method: 'POST',
+  body: formData
+})
+.then(response => {
+  // Si la respuesta es exitosa, devuelve el archivo procesado como un objeto Blob
+  if (response.ok) {
+    return response.blob();
+  }
+})
+.then(blob => {
+  // Aquí puedes hacer lo que necesites con el objeto 'blob' que contiene el archivo procesado
+})
+.catch(error => {
+  console.error('Error al procesar el archivo:', error);
+});
+En este ejemplo, se utiliza la API Fetch para enviar el archivo seleccionado por el usuario en un input file a la ruta /procesar-archivo del servidor Flask utilizando una solicitud POST. Cuando el servidor termina de procesar el archivo, devuelve el archivo procesado al front-end como un objeto Blob. Si la respuesta del servidor es exitosa, la función blob() se encarga de convertir la respuesta en un objeto Blob que contiene el archivo procesado. A partir de aquí, puedes hacer lo que necesites con el archivo procesado en el front-end.
+
+Es importante destacar que el servidor Flask debe estar configurado para devolver el archivo procesado utilizando la cabecera Content-Disposition. Por ejemplo:
+
+python
+Copy code
+from flask import send_file
+
+@app.route('/procesar-archivo', methods=['POST'])
+def procesar_archivo():
+  # Procesar el archivo
+  ...
+
+  # Devolver el archivo procesado al front-end
+  return send_file(
+    'ruta/al/archivo/procesado',
+    mimetype='application/octet-stream',
+    as_attachment=True,
+    attachment_filename='archivo-procesado.txt'
+  )
+En este ejemplo, send_file es una función de Flask que envía un archivo como respuesta a una solicitud HTTP. La cabecera Content-Disposition se establece en attachment para que el navegador trate el archivo como una descarga en lugar de mostrarlo en el navegador. El parámetro attachment_filename establece el nombre del archivo descargado.
+
+
+
+

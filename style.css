@@ -1,0 +1,28 @@
+@keyframes gif-animation {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  
+  /* Aplicar la animación al GIF */
+  #gif {
+    animation-play-state: paused;
+  }
+  
+  /* Detener la animación del GIF */
+  #gif.stopped {
+    animation: gif-animation 1s linear infinite;
+  }
+
+  /*ESTO ANDABA AL REVES
+    Aplicar la animación al GIF
+    #gif {
+        animation: gif-animation 1s linear infinite;
+      }
+      
+       Detener la animación del GIF 
+      #gif.stopped {
+        animation-play-state: paused;
+      }
+  
+  */
